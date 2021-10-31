@@ -6,62 +6,87 @@ pragma solidity >=0.4.22 <0.9.0;
 contract NoProfitAssociation {
     
 struct Campaign {
-    uint idCampaign;
+    uint256 idCampaign;
     string campaignName;
     string campaignDescription;
-    uint totalAmountRequired;
-    uint likes;
-    uint dislikes;
+    uint256 totalAmountRequired;
+    uint256 score;
     address campaignCreator;
-    //address [] campaignSupporters;
+    uint256 currentEthers;
 }
 
 //list of campaigns. Use a simple array to store campaign ids and not the whole Campaign Struct
-uint[]  idCampaigns;
+uint256[]  idCampaigns;
 
+uint256 campaignId;
 
-mapping (uint => Campaign)  private campaigns;
+mapping (uint256 => Campaign)  private campaigns;
 
 //function createCampaign (Campaign memory _campaign) public payable{
     //a new campaign created by a user
 //}
-function createCampaign (uint _id, string memory _campaignName, string memory _campaignDescription, uint _totalAmountRequired,
+
+constructor()   public {   
+      campaignId = 0;
+  }
+function createCampaign (string memory _campaignName, string memory _campaignDescription, uint _totalAmountRequired,
 address _campaignCreator) public payable {
     //a new campaign created by a user
-    campaigns[_id].idCampaign=_id;
-    campaigns[_id].campaignName = _campaignName;
-    campaigns[_id].campaignDescription = _campaignDescription;
-    campaigns[_id].totalAmountRequired = _totalAmountRequired;
-    campaigns[_id].likes = 0;
-    campaigns[_id].dislikes = 0;
-    campaigns[_id].campaignCreator = _campaignCreator;
+    campaigns[campaignId].idCampaign= campaignId;
+    campaigns[campaignId].campaignName = _campaignName;
+    campaigns[campaignId].campaignDescription = _campaignDescription;
+    campaigns[campaignId].totalAmountRequired = _totalAmountRequired;
+    campaigns[campaignId].score = 0;
+    campaigns[campaignId].campaignCreator = _campaignCreator;
+    campaigns[campaignId].currentEthers = 0;
+
+    idCampaigns.push(campaignId);
+    campaignId = campaignId + 1; 
+    
 }
+//amount that user  send to a Campaign
 function addMoneyToCampaign(uint _amount, uint _idCampaign) public payable minimumAmountRequired{
-    //amount that user  send to a Campaign
+    uint256 currentMoney = campaigns[_idCampaign].currentEthers;
+    uint256 ethersUpdated = currentMoney + _amount;
+     campaigns[_idCampaign].currentEthers = ethersUpdated;
 }
 
-function removeCampaign(uint _idCampaign) isCampaignCreator (_idCampaign) public {
+function removeCampaign(uint256 _idCampaign) isCampaignCreator (_idCampaign) public {
     //delete a campaign (only the campaign creator can do it) 
+    //iterate in the array to locate the id and delete it
+    uint256[] memory elements = idCampaigns;
+    for (uint256 index = 0; index < elements.length; index++) {
+        if(elements[index] == _idCampaign) {
+            delete idCampaigns[index];
+        }
+    }
 }
 
 function likeCampaign(uint _idCampaign) public isCampaignSupporter(_idCampaign){
     //give a like (increase campaign puntuation). The user must be a supporter
+     uint256 currentScore = campaigns[_idCampaign].score;
+     uint256 finalScore = currentScore++;
+    campaigns[_idCampaign].score = finalScore;
+
 }
 
 function dislikeCampaign(uint _idCampaign) public isCampaignSupporter(_idCampaign){
     //give a dislike (decrease campaign score). The user must be a supporter
+     uint256 currentScore = campaigns[_idCampaign].score;
+     uint256 finalScore = currentScore--;
+    campaigns[_idCampaign].score = finalScore;
 }
 
-function getCampaign (uint _idCampaign) public view returns(uint _id, string memory _campaignName, string memory _campaignDescription,
- uint totalAmountRequired,uint likes,uint dislikes, address campaignCreator) {
+function getCampaign (uint256 _idCampaign) public view returns(uint256 _id, string memory _campaignName, string memory _campaignDescription,
+ uint256 totalAmountRequired,uint256 score, address campaignCreator, uint256 _currentEthers) {
     return (
     campaigns[_idCampaign].idCampaign,
     campaigns[_idCampaign].campaignName,
     campaigns[_idCampaign].campaignDescription,
     campaigns[_idCampaign].totalAmountRequired,
-    campaigns[_idCampaign].likes,
-    campaigns[_idCampaign].dislikes,
-    campaigns[_idCampaign].campaignCreator
+    campaigns[_idCampaign].score,
+    campaigns[_idCampaign].campaignCreator,
+    campaigns[_idCampaign].currentEthers
     );
 }
 
