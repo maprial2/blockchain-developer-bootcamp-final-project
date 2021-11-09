@@ -16,7 +16,7 @@ struct Campaign {
 }
 
 //list of campaigns. Use a simple array to store campaign ids and not the whole Campaign Struct
-uint256[]  idCampaigns;
+uint256[]  idCampaignsArray;
 
 uint256 campaignId;
 
@@ -40,24 +40,25 @@ address _campaignCreator) public payable {
     campaigns[campaignId].campaignCreator = _campaignCreator;
     campaigns[campaignId].currentEthers = 0;
 
-    idCampaigns.push(campaignId);
+    idCampaignsArray.push(campaignId);
     campaignId = campaignId + 1; 
     
 }
 //amount that user  send to a Campaign
-function addMoneyToCampaign(uint _amount, uint _idCampaign) public payable minimumAmountRequired{
+function addMoneyToCampaign(uint _idCampaign) public payable minimumAmountRequired{
     uint256 currentMoney = campaigns[_idCampaign].currentEthers;
-    uint256 ethersUpdated = currentMoney + _amount;
+    uint256 ethersUpdated = currentMoney + msg.value;
      campaigns[_idCampaign].currentEthers = ethersUpdated;
 }
 
 function removeCampaign(uint256 _idCampaign) isCampaignCreator (_idCampaign) public {
     //delete a campaign (only the campaign creator can do it) 
     //iterate in the array to locate the id and delete it
-    uint256[] memory elements = idCampaigns;
+    uint256[] memory elements = idCampaignsArray
+;
     for (uint256 index = 0; index < elements.length; index++) {
         if(elements[index] == _idCampaign) {
-            delete idCampaigns[index];
+            delete idCampaignsArray[index];
         }
     }
 }
@@ -90,6 +91,9 @@ function getCampaign (uint256 _idCampaign) public view returns(uint256 _id, stri
     );
 }
 
+function getCampaignsList() public view returns (uint256[] memory){
+    return idCampaignsArray;
+}
 modifier minimumAmountRequired () {
     //minimum amount a user cand send to campaign
     _;

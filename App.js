@@ -1,14 +1,14 @@
 // contract address on Ropsten:
-const ssAddress = '0xAcc9978ff9758d9d4DB508471119c13CbA25A8ff'
+const ssAddress = '0x6Ae7646C3DC56769EC83f6Be5A3189FfEC40bc50'
 
 const ssABI = [
 	{
+		"inputs": [],
+		"stateMutability": "nonpayable",
+		"type": "constructor"
+	},
+	{
 		"inputs": [
-			{
-				"internalType": "uint256",
-				"name": "_amount",
-				"type": "uint256"
-			},
 			{
 				"internalType": "uint256",
 				"name": "_idCampaign",
@@ -22,11 +22,6 @@ const ssABI = [
 	},
 	{
 		"inputs": [
-			{
-				"internalType": "uint256",
-				"name": "_id",
-				"type": "uint256"
-			},
 			{
 				"internalType": "string",
 				"name": "_campaignName",
@@ -98,18 +93,31 @@ const ssABI = [
 			},
 			{
 				"internalType": "uint256",
-				"name": "likes",
-				"type": "uint256"
-			},
-			{
-				"internalType": "uint256",
-				"name": "dislikes",
+				"name": "score",
 				"type": "uint256"
 			},
 			{
 				"internalType": "address",
 				"name": "campaignCreator",
 				"type": "address"
+			},
+			{
+				"internalType": "uint256",
+				"name": "_currentEthers",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "getCampaignsList",
+		"outputs": [
+			{
+				"internalType": "uint256[]",
+				"name": "",
+				"type": "uint256[]"
 			}
 		],
 		"stateMutability": "view",
@@ -192,54 +200,176 @@ window.addEventListener('load', function() {
     var mmCurrentAccount = document.getElementById('mm-current-account');
     mmCurrentAccount.innerHTML = 'Current Account: ' + ethereum.selectedAddress
   }
-  
-  // grab the button for input to a contract:
-  
-  const ssSubmit = document.getElementById('ss-input-button-create');
-  
-  ssSubmit.onclick = async () => {
-    // grab value from input
-    
-    const ssInputNameValue = document.getElementById('ss-input-box-name').value;
-    console.log(ssInputNameValue)
 
-    const ssInputDescValue = document.getElementById('ss-input-box-desc').value;
-    console.log(ssInputDescValue)
+  const divButtons = document.getElementById('idInitialOptions');
+  const addCampaignButton = document.getElementById('idAddCampaignButton');
 
-    const ssInputAmountValue = document.getElementById('ss-input-box-amount').value;
-    console.log(ssInputAmountValue)
-  
-    var web3 = new Web3(window.ethereum)
+  addCampaignButton.onclick = async() => { 
 
-    const addresSelected = ethereum.selectedAddress;
+if( !document.getElementById('divWithForm')) {
+	if(document.getElementById('idCampaigns')){
+		hideCampaigns();
+	}
+	const divButtons = document.getElementById('idInitialOptions');
 
-    console.log('addres' + addresSelected);
-  
-    // instantiate smart contract instance
-    
-    const noProfitAssoc = new web3.eth.Contract(ssABI, ssAddress)
-    noProfitAssoc.setProvider(window.ethereum)
-  
-    await noProfitAssoc.methods.createCampaign("1", ssInputNameValue, ssInputDescValue,ssInputAmountValue, addresSelected).send({from: ethereum.selectedAddress})
-  
+	const divSq = document.createElement("div");
+	divSq.setAttribute('id','divWithForm');
+	const para = document.createElement("p");
+const node = document.createTextNode("Fill Project name");
+para.appendChild(node);
+divSq.appendChild(para);
+var inputName = document.createElement("input");
+inputName.setAttribute('type', 'text');
+inputName.setAttribute('id', 'ss-input-box-name');
+divSq.appendChild(inputName);
+
+const descrP = document.createElement("p");
+const descrPtext = document.createTextNode("Fill Project Description");
+descrP.appendChild(descrPtext);
+divSq.appendChild(descrP);
+
+var textAreaDescr = document.createElement("textarea");
+textAreaDescr.setAttribute('maxlength', '30');
+textAreaDescr.setAttribute('id', 'ss-input-box-desc');
+textAreaDescr.setAttribute('rows', '4');
+textAreaDescr.setAttribute('cols', '100');
+textAreaDescr.setAttribute('placeholder', 'Project description');
+divSq.appendChild(textAreaDescr);
+var space = document.createElement("br");
+divSq.appendChild(space);
+
+
+const titleAmount = document.createElement("p");
+const titleAmountDescr = document.createTextNode("Amount required (in ethers)");
+titleAmount.appendChild(titleAmountDescr);
+divSq.appendChild(titleAmount);
+var inputAmount = document.createElement("input");
+inputAmount.setAttribute('type', 'number');
+inputAmount.setAttribute('id', 'ss-input-box-amount');
+divSq.appendChild(inputAmount);
+var spaceAm = document.createElement("br");
+divSq.appendChild(spaceAm);
+
+
+const buttonCreate = document.createElement("button");
+buttonCreate.innerHTML="Create Campaign";
+buttonCreate.onclick = async() => {
+
+	
+		// grab value from input
+		
+		const ssInputNameValue = document.getElementById('ss-input-box-name').value;
+		console.log(ssInputNameValue)
+	
+		const ssInputDescValue = document.getElementById('ss-input-box-desc').value;
+		console.log(ssInputDescValue)
+		var ssInputAmountValue = document.getElementById('ss-input-box-amount').value;
+		console.log(ssInputAmountValue) 
+		var web3 = new Web3(window.ethereum)
+	
+		const addresSelected = ethereum.selectedAddress;
+	
+		console.log('addres' + addresSelected);
+	  
+		// instantiate smart contract instance
+		
+		const noProfitAssoc = new web3.eth.Contract(ssABI, ssAddress)
+		noProfitAssoc.setProvider(window.ethereum)
+	  
+		await noProfitAssoc.methods.createCampaign(ssInputNameValue, ssInputDescValue,ssInputAmountValue, addresSelected).send({from: ethereum.selectedAddress})
+
+}
+divSq.appendChild(buttonCreate);
+
+divButtons.append(divSq);}
   }
+  const viewCampaignsButton = document.getElementById('idViewCampaigns');
   
-  const ssGetValue = document.getElementById('ss-get-campaign-value')
-  
-  ssGetValue.onclick = async () => {
-  
-    var web3 = new Web3(window.ethereum)
+  viewCampaignsButton.onclick = async () => {
+	hideFormDiv();
+	var web3 = new Web3(window.ethereum)
   
     const noProfitAssoc = new web3.eth.Contract(ssABI, ssAddress)
     noProfitAssoc.setProvider(window.ethereum)
-    const ssGetId = document.getElementById('ss-input-box-id').value;
-    console.log('id ' + ssGetId);
-    var value = await noProfitAssoc.methods.getCampaign(ssGetId).call()
-  
-    console.log(value);
-  
-    const ssDisplayValue = document.getElementById('ss-display-value')
+	var arraysN = await noProfitAssoc.methods.getCampaignsList().call();
 
-    ssDisplayValue.innerHTML = 'Current Simple Campaign name: ' + Object.values(value)[1];
-  
+	if(arraysN.length !==0){
+		var listCampaigns = document.createElement('div');
+		listCampaigns.setAttribute('id','idCampaigns');
+		divButtons.appendChild(listCampaigns);
+	}
+
+	arraysN.forEach(element => {
+		showCampaign(element);
+	});
+  }
+ 
+  function comprobar() {	
+  }
+
+  function hideFormDiv() {
+	  if(document.getElementById('divWithForm')) {
+	  var hideDiv = document.getElementById('divWithForm');
+	  var parentHideDiv = document.getElementById('idInitialOptions');
+	  parentHideDiv.removeChild(hideDiv);
+	  }
+  }
+
+  async function showCampaign(id) {
+	console.log('campaign is' + id+ ''); 
+	var web3 = new Web3(window.ethereum)
+    const noProfitAssoc = new web3.eth.Contract(ssABI, ssAddress)
+    noProfitAssoc.setProvider(window.ethereum)
+	var campaign = await noProfitAssoc.methods.getCampaign(id).call();
+	console.log(campaign);
+	var divList = document.getElementById('idCampaigns');
+	//get info of a campaign
+	const divCampaign = document.createElement("div");
+	divCampaign.setAttribute('id',id);
+	const titleCampaign = document.createElement("p");
+	titleCampaign.innerText = "Campaign: "+Object.values(campaign)[1];
+	divCampaign.appendChild(titleCampaign);
+
+	const titleCampaignText = document.createElement("p");
+	titleCampaignText.innerText = "Campaign: "+Object.values(campaign)[2];
+	divCampaign.appendChild(titleCampaignText);
+
+	const amountText = document.createElement("p");
+	amountText.innerText = "Amount required: "+Object.values(campaign)[3];
+	divCampaign.appendChild(amountText);
+
+	const currentAmountText = document.createElement("p");
+	currentAmountText.innerText = "current ethers: "+Object.values(campaign)[6];
+	divCampaign.appendChild(currentAmountText);
+
+	const donateButton = document.createElement("button");
+	donateButton.innerHTML="Donate";
+	divCampaign.appendChild(donateButton);
+
+	const donationAmount = document.createElement('input');
+	donationAmount.setAttribute('id','idDonationAmount');
+	divCampaign.appendChild(donationAmount);
+
+	donateButton.onclick =  () => {
+		addResources(id);
+	}
+
+	divList.append(divCampaign);
+  }
+
+  async function addResources (idCamp) {
+	var web3 = new Web3(window.ethereum);
+    const noProfitAssoc = new web3.eth.Contract(ssABI, ssAddress);
+    noProfitAssoc.setProvider(window.ethereum);
+	const amountDonated = document.getElementById('idDonationAmount').value;
+	console.log("amount donated "+amountDonated);
+	await noProfitAssoc.methods.addMoneyToCampaign(idCamp).send({from: ethereum.selectedAddress, value:web3.utils.toWei(amountDonated,'ether')});
+  }
+
+  function hideCampaigns(){
+
+	var parentHideDiv = document.getElementById('idInitialOptions');
+	  
+	const listCampaigns = document.getElementById('idCampaigns');
+	parentHideDiv.removeChild(listCampaigns);
   }
