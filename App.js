@@ -1,5 +1,5 @@
 // contract address on Ropsten:
-const ssAddress = '0x6Ae7646C3DC56769EC83f6Be5A3189FfEC40bc50'
+const ssAddress = '0x16ba20b4097929eb955acfaf108D7C9f0456D8F9'
 
 const ssABI = [
 	{
@@ -45,7 +45,7 @@ const ssABI = [
 		],
 		"name": "createCampaign",
 		"outputs": [],
-		"stateMutability": "payable",
+		"stateMutability": "nonpayable",
 		"type": "function"
 	},
 	{
@@ -287,12 +287,15 @@ divButtons.append(divSq);}
   
   viewCampaignsButton.onclick = async () => {
 	hideFormDiv();
+	if(document.getElementById('idCampaigns')){
+		hideCampaigns();
+	}
 	var web3 = new Web3(window.ethereum)
   
     const noProfitAssoc = new web3.eth.Contract(ssABI, ssAddress)
     noProfitAssoc.setProvider(window.ethereum)
 	var arraysN = await noProfitAssoc.methods.getCampaignsList().call();
-
+	console.log(arraysN);
 	if(arraysN.length !==0){
 		var listCampaigns = document.createElement('div');
 		listCampaigns.setAttribute('id','idCampaigns');
@@ -316,6 +319,7 @@ divButtons.append(divSq);}
   }
 
   async function showCampaign(id) {
+	 
 	console.log('campaign is' + id+ ''); 
 	var web3 = new Web3(window.ethereum)
     const noProfitAssoc = new web3.eth.Contract(ssABI, ssAddress)
@@ -338,8 +342,12 @@ divButtons.append(divSq);}
 	amountText.innerText = "Amount required: "+Object.values(campaign)[3];
 	divCampaign.appendChild(amountText);
 
+	const scoreText = document.createElement("p");
+	scoreText.innerText = "Score: "+Object.values(campaign)[4];
+	divCampaign.appendChild(scoreText);
+
 	const currentAmountText = document.createElement("p");
-	currentAmountText.innerText = "current ethers: "+Object.values(campaign)[6];
+	currentAmountText.innerText = "current ethers: "+web3.utils.fromWei(Object.values(campaign)[6]);
 	divCampaign.appendChild(currentAmountText);
 
 	const donateButton = document.createElement("button");
@@ -353,9 +361,34 @@ divButtons.append(divSq);}
 	donateButton.onclick =  () => {
 		addResources(id);
 	}
+	const likeButton = document.createElement("button");
+	likeButton.innerHTML="Like";
+	divCampaign.appendChild(likeButton);
+
+	likeButton.onclick = () => {
+		supportCampaign(id);
+	}
+
+	const dislikeButton = document.createElement("button");
+	dislikeButton.innerHTML="Dislike";
+	divCampaign.appendChild(dislikeButton);
+
+	dislikeButton.onclick = () => {
+		dislikeCampaign(id);
+	}
+
+
+	const removeCampaignButton = document.createElement("button");
+	removeCampaignButton.innerHTML="Remove Campaign";
+	divCampaign.appendChild(removeCampaignButton);
+
+	removeCampaignButton.onclick = () => {
+		removeCampaign(id);
+	}
 
 	divList.append(divCampaign);
-  }
+}
+  
 
   async function addResources (idCamp) {
 	var web3 = new Web3(window.ethereum);
@@ -363,8 +396,29 @@ divButtons.append(divSq);}
     noProfitAssoc.setProvider(window.ethereum);
 	const amountDonated = document.getElementById('idDonationAmount').value;
 	console.log("amount donated "+amountDonated);
-	await noProfitAssoc.methods.addMoneyToCampaign(idCamp).send({from: ethereum.selectedAddress, value:web3.utils.toWei(amountDonated,'ether')});
+	await noProfitAssoc.methods.addMoneyToCampaign(idCamp).send({from: ethereum.selectedAddress, value:web3.utils.toWei(amountDonated)});
   }
+
+  async function supportCampaign (idCamp) {
+	var web3 = new Web3(window.ethereum);
+    const noProfitAssoc = new web3.eth.Contract(ssABI, ssAddress);
+    noProfitAssoc.setProvider(window.ethereum);
+	await noProfitAssoc.methods.likeCampaign(idCamp).send({from: ethereum.selectedAddress});
+}
+
+async function dislikeCampaign (idCamp) {
+	var web3 = new Web3(window.ethereum);
+    const noProfitAssoc = new web3.eth.Contract(ssABI, ssAddress);
+    noProfitAssoc.setProvider(window.ethereum);
+	await noProfitAssoc.methods.dislikeCampaign(idCamp).send({from: ethereum.selectedAddress});
+}
+
+async function removeCampaign (idCamp) {
+	var web3 = new Web3(window.ethereum);
+    const noProfitAssoc = new web3.eth.Contract(ssABI, ssAddress);
+    noProfitAssoc.setProvider(window.ethereum);
+	await noProfitAssoc.methods.removeCampaign(idCamp).send({from: ethereum.selectedAddress});
+}
 
   function hideCampaigns(){
 

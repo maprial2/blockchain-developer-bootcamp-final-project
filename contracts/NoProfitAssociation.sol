@@ -1,8 +1,6 @@
 // SPDX-License-Identifier: MIT
 pragma solidity >=0.4.22 <0.9.0;
 
-
-
 contract NoProfitAssociation {
     
 struct Campaign {
@@ -30,7 +28,7 @@ constructor()   public {
       campaignId = 0;
   }
 function createCampaign (string memory _campaignName, string memory _campaignDescription, uint _totalAmountRequired,
-address _campaignCreator) public payable {
+address _campaignCreator) public {
     //a new campaign created by a user
     campaigns[campaignId].idCampaign= campaignId;
     campaigns[campaignId].campaignName = _campaignName;
@@ -54,32 +52,34 @@ function addMoneyToCampaign(uint _idCampaign) public payable minimumAmountRequir
 function removeCampaign(uint256 _idCampaign) isCampaignCreator (_idCampaign) public {
     //delete a campaign (only the campaign creator can do it) 
     //iterate in the array to locate the id and delete it
-    uint256[] memory elements = idCampaignsArray
-;
-    for (uint256 index = 0; index < elements.length; index++) {
-        if(elements[index] == _idCampaign) {
-            delete idCampaignsArray[index];
-        }
+
+   for(uint i = 0; i < idCampaignsArray.length; i++)  {
+    if(idCampaignsArray[i] == _idCampaign) {
+    idCampaignsArray[i] = idCampaignsArray[idCampaignsArray.length - 1];
+    idCampaignsArray.pop();
+    break;
     }
 }
+}
 
-function likeCampaign(uint _idCampaign) public isCampaignSupporter(_idCampaign){
+function likeCampaign(uint _idCampaign) public{
     //give a like (increase campaign puntuation). The user must be a supporter
      uint256 currentScore = campaigns[_idCampaign].score;
-     uint256 finalScore = currentScore++;
+     uint256 finalScore = ++currentScore;
     campaigns[_idCampaign].score = finalScore;
 
 }
 
-function dislikeCampaign(uint _idCampaign) public isCampaignSupporter(_idCampaign){
+function dislikeCampaign(uint _idCampaign) public {
     //give a dislike (decrease campaign score). The user must be a supporter
      uint256 currentScore = campaigns[_idCampaign].score;
-     uint256 finalScore = currentScore--;
+     uint256 finalScore = --currentScore;
     campaigns[_idCampaign].score = finalScore;
 }
 
 function getCampaign (uint256 _idCampaign) public view returns(uint256 _id, string memory _campaignName, string memory _campaignDescription,
  uint256 totalAmountRequired,uint256 score, address campaignCreator, uint256 _currentEthers) {
+     if(campaigns[_idCampaign].idCampaign !=0){
     return (
     campaigns[_idCampaign].idCampaign,
     campaigns[_idCampaign].campaignName,
@@ -89,6 +89,7 @@ function getCampaign (uint256 _idCampaign) public view returns(uint256 _id, stri
     campaigns[_idCampaign].campaignCreator,
     campaigns[_idCampaign].currentEthers
     );
+     }
 }
 
 function getCampaignsList() public view returns (uint256[] memory){
@@ -100,10 +101,7 @@ modifier minimumAmountRequired () {
 }
 modifier isCampaignCreator(uint _idCampaign) {
     //check that user is the creator of a campaign
-    _;
-}
-modifier isCampaignSupporter(uint _idCampaign) {
-    //check that user sent money to the campaign
+    campaigns[_idCampaign].campaignCreator == msg.sender;
     _;
 }
 
