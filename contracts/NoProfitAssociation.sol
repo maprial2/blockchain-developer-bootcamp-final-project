@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
-pragma solidity >=0.4.22 <0.9.0;
-
-contract NoProfitAssociation {
+pragma solidity ^0.8.0;
+import "@openzeppelin/contracts/access/Ownable.sol";
+contract NoProfitAssociation is Ownable{
     
 struct Campaign {
     uint256 idCampaign;
@@ -9,7 +9,7 @@ struct Campaign {
     string campaignDescription;
     uint256 totalAmountRequired;
     uint256 score;
-    address campaignCreator;
+    address payable campaignCreator;
     uint256 currentEthers;
 }
 
@@ -24,11 +24,11 @@ mapping (uint256 => Campaign)  private campaigns;
     //a new campaign created by a user
 //}
 
-constructor()   public {   
+constructor()  {   
       campaignId = 0;
   }
 function createCampaign (string memory _campaignName, string memory _campaignDescription, uint _totalAmountRequired,
-address _campaignCreator) public {
+address payable _campaignCreator) public {
     //a new campaign created by a user
     campaigns[campaignId].idCampaign= campaignId;
     campaigns[campaignId].campaignName = _campaignName;
@@ -43,10 +43,14 @@ address _campaignCreator) public {
     
 }
 //amount that user  send to a Campaign
-function addMoneyToCampaign(uint _idCampaign) public payable minimumAmountRequired{
+function addMoneyToCampaign(uint _idCampaign, address payable sender) public payable {
     uint256 currentMoney = campaigns[_idCampaign].currentEthers;
     uint256 ethersUpdated = currentMoney + msg.value;
-     campaigns[_idCampaign].currentEthers = ethersUpdated;
+    if(ethersUpdated > campaigns[_idCampaign].totalAmountRequired){
+        uint ethersToRefund = msg.value - (campaigns[_idCampaign].totalAmountRequired - currentMoney);
+        campaigns[_idCampaign].currentEthers = campaigns[_idCampaign].totalAmountRequired;
+        sender.transfer(ethersToRefund);
+    }
 }
 
 function removeCampaign(uint256 _idCampaign) isCampaignCreator (_idCampaign) public {
@@ -95,13 +99,10 @@ function getCampaign (uint256 _idCampaign) public view returns(uint256 _id, stri
 function getCampaignsList() public view returns (uint256[] memory){
     return idCampaignsArray;
 }
-modifier minimumAmountRequired () {
-    //minimum amount a user cand send to campaign
-    _;
-}
+
 modifier isCampaignCreator(uint _idCampaign) {
     //check that user is the creator of a campaign
-    campaigns[_idCampaign].campaignCreator == msg.sender;
+    require(campaigns[_idCampaign].campaignCreator == msg.sender,"Campaign can be deleted only bt the creator");
     _;
 }
 

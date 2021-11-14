@@ -1,5 +1,5 @@
 // contract address on Ropsten:
-const ssAddress = '0x16ba20b4097929eb955acfaf108D7C9f0456D8F9'
+const ssAddress = '0x4194C6755302e468A45f3F904aAe7Ba0A7Bb88Aa'
 
 const ssABI = [
 	{
@@ -8,11 +8,35 @@ const ssABI = [
 		"type": "constructor"
 	},
 	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": true,
+				"internalType": "address",
+				"name": "previousOwner",
+				"type": "address"
+			},
+			{
+				"indexed": true,
+				"internalType": "address",
+				"name": "newOwner",
+				"type": "address"
+			}
+		],
+		"name": "OwnershipTransferred",
+		"type": "event"
+	},
+	{
 		"inputs": [
 			{
 				"internalType": "uint256",
 				"name": "_idCampaign",
 				"type": "uint256"
+			},
+			{
+				"internalType": "address payable",
+				"name": "sender",
+				"type": "address"
 			}
 		],
 		"name": "addMoneyToCampaign",
@@ -38,7 +62,7 @@ const ssABI = [
 				"type": "uint256"
 			},
 			{
-				"internalType": "address",
+				"internalType": "address payable",
 				"name": "_campaignCreator",
 				"type": "address"
 			}
@@ -137,6 +161,19 @@ const ssABI = [
 		"type": "function"
 	},
 	{
+		"inputs": [],
+		"name": "owner",
+		"outputs": [
+			{
+				"internalType": "address",
+				"name": "",
+				"type": "address"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
 		"inputs": [
 			{
 				"internalType": "uint256",
@@ -148,8 +185,29 @@ const ssABI = [
 		"outputs": [],
 		"stateMutability": "nonpayable",
 		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "renounceOwnership",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "newOwner",
+				"type": "address"
+			}
+		],
+		"name": "transferOwnership",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
 	}
 ]
+
 
 
 window.addEventListener('load', function() {
@@ -396,7 +454,7 @@ divButtons.append(divSq);}
     noProfitAssoc.setProvider(window.ethereum);
 	const amountDonated = document.getElementById('idDonationAmount').value;
 	console.log("amount donated "+amountDonated);
-	await noProfitAssoc.methods.addMoneyToCampaign(idCamp).send({from: ethereum.selectedAddress, value:web3.utils.toWei(amountDonated)});
+	await noProfitAssoc.methods.addMoneyToCampaign(idCamp, ethereum.selectedAddress).send({from: ethereum.selectedAddress, value:web3.utils.toWei(amountDonated)});
   }
 
   async function supportCampaign (idCamp) {
