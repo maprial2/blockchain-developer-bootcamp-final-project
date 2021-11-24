@@ -1,14 +1,16 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.0;
+pragma solidity 0.8.0;
 import "@openzeppelin/contracts/access/Ownable.sol";
-contract NoProfitAssociation is Ownable{
+
+///@notice Contract to manage a non-profit association projects
+contract NoProfitAssociation is Ownable {
     
 struct Campaign {
     uint256 idCampaign;
     string campaignName;
     string campaignDescription;
     uint256 totalAmountRequired;
-    uint256 score;
+    int16 score;
     address payable campaignCreator;
     uint256 currentEthers;
 }
@@ -18,18 +20,26 @@ uint256[]  idCampaignsArray;
 
 uint256 campaignId;
 
-mapping (uint256 => Campaign)  private campaigns;
+mapping (uint256 => Campaign)  public campaigns;
 
-//function createCampaign (Campaign memory _campaign) public payable{
-    //a new campaign created by a user
-//}
+modifier isNotCampaignCreator(uint _idCampaign) {
+
+    require(campaigns[_idCampaign].campaignCreator != msg.sender,"Campaign creator cannot");
+    _;
+}
 
 constructor()  {   
       campaignId = 0;
   }
-function createCampaign (string memory _campaignName, string memory _campaignDescription, uint _totalAmountRequired,
+ 
+///@notice function to create a campaign and be included into the App
+///@param _campaignName  Campaign name given by user
+///@param _campaignDescription  Campaign description given by user
+///@param _totalAmountRequired  Amount (in ethers) that user asf for the Campaign
+///@param _campaignCreator Ethereum address of user who created the Campaign(funds will be transfered to this address)
+function createCampaign (string memory _campaignName, string memory _campaignDescription, uint256 _totalAmountRequired,
 address payable _campaignCreator) public {
-    //a new campaign created by a user
+    
     campaigns[campaignId].idCampaign= campaignId;
     campaigns[campaignId].campaignName = _campaignName;
     campaigns[campaignId].campaignDescription = _campaignDescription;
@@ -42,20 +52,19 @@ address payable _campaignCreator) public {
     campaignId = campaignId + 1; 
     
 }
-//amount that user  send to a Campaign
-function addMoneyToCampaign(uint _idCampaign, address payable sender) public payable {
-    uint256 currentMoney = campaigns[_idCampaign].currentEthers;
-    uint256 ethersUpdated = currentMoney + msg.value;
-    if(ethersUpdated > campaigns[_idCampaign].totalAmountRequired){
-        uint ethersToRefund = msg.value - (campaigns[_idCampaign].totalAmountRequired - currentMoney);
-        campaigns[_idCampaign].currentEthers = campaigns[_idCampaign].totalAmountRequired;
-        sender.transfer(ethersToRefund);
-    }
+///@notice Funds that are added to a specific Campaign
+///@param _idCampaign Campaign identifier
+///@param _donation Amount donated to the Campaign
+///@dev No limit to the amount donated
+function addMoneyToCampaign(uint _idCampaign, uint _donation) isNotCampaignCreator(_idCampaign) public payable {
+  
+    campaigns[_idCampaign].currentEthers += _donation;
 }
-
-function removeCampaign(uint256 _idCampaign) isCampaignCreator (_idCampaign) public {
-    //delete a campaign (only the campaign creator can do it) 
-    //iterate in the array to locate the id and delete it
+///@notice Method to remove a Campaign frm the Campaigns´list by the App administrator
+///@param _idCampaign Campaign identifier
+///@dev According OpenZeppelin contract only contract owner can call this function
+///@dev Identifier is deleted from the identifiers list (idCampaignsArray)
+function removeCampaign(uint256 _idCampaign)  public onlyOwner {
 
    for(uint i = 0; i < idCampaignsArray.length; i++)  {
     if(idCampaignsArray[i] == _idCampaign) {
@@ -65,25 +74,26 @@ function removeCampaign(uint256 _idCampaign) isCampaignCreator (_idCampaign) pub
     }
 }
 }
-
-function likeCampaign(uint _idCampaign) public{
-    //give a like (increase campaign puntuation). The user must be a supporter
-     uint256 currentScore = campaigns[_idCampaign].score;
-     uint256 finalScore = ++currentScore;
-    campaigns[_idCampaign].score = finalScore;
+///@notice Method to support a Campaign (give a like). Increasing the score.
+///@param _idCampaign Campaign identifier
+function likeCampaign(uint _idCampaign) isNotCampaignCreator(_idCampaign) public{
+    
+     int16 currentScore = campaigns[_idCampaign].score;
+     campaigns[_idCampaign].score = ++currentScore;
+     
 
 }
-
-function dislikeCampaign(uint _idCampaign) public {
-    //give a dislike (decrease campaign score). The user must be a supporter
-     uint256 currentScore = campaigns[_idCampaign].score;
-     uint256 finalScore = --currentScore;
-    campaigns[_idCampaign].score = finalScore;
+///@notice Method to give a negative opinion to a Campaign.Decreasing the score 
+///@param _idCampaign Campaign identifier
+function dislikeCampaign(uint _idCampaign) public { 
+     int16 currentScore = campaigns[_idCampaign].score;
+    campaigns[_idCampaign].score = --currentScore;
 }
 
+///@notice Give the information about a Campaign 
+///@param _idCampaign Campaign identifier
 function getCampaign (uint256 _idCampaign) public view returns(uint256 _id, string memory _campaignName, string memory _campaignDescription,
- uint256 totalAmountRequired,uint256 score, address campaignCreator, uint256 _currentEthers) {
-     if(campaigns[_idCampaign].idCampaign !=0){
+ uint256 totalAmountRequired,int16 score, address campaignCreator, uint256 _currentEthers) {
     return (
     campaigns[_idCampaign].idCampaign,
     campaigns[_idCampaign].campaignName,
@@ -93,17 +103,19 @@ function getCampaign (uint256 _idCampaign) public view returns(uint256 _id, stri
     campaigns[_idCampaign].campaignCreator,
     campaigns[_idCampaign].currentEthers
     );
-     }
 }
-
+///@notice Get the list of Campaigns proposed
+///@return idCampaignsArray list of Campaign´s identifiers
 function getCampaignsList() public view returns (uint256[] memory){
     return idCampaignsArray;
 }
+///@notice Transfer Campaign´s funds to the Campaign creator
+///@param _idCampaign Campaign identifier
+///@dev According OpenZeppelin contract only contract owner can call this function
+function transferCampaignEthers (uint _idCampaign) public payable onlyOwner{
 
-modifier isCampaignCreator(uint _idCampaign) {
-    //check that user is the creator of a campaign
-    require(campaigns[_idCampaign].campaignCreator == msg.sender,"Campaign can be deleted only bt the creator");
-    _;
+campaigns[_idCampaign].campaignCreator.transfer(campaigns[_idCampaign].currentEthers);
+campaigns[_idCampaign].currentEthers=0;
 }
 
 }

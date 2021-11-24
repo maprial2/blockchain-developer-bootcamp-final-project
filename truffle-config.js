@@ -90,7 +90,7 @@ module.exports = {
       //  },
       //  evmVersion: "byzantium"
       // }
-      version: "0.8.4",
+      version: "0.8.0",
     }
   },
 
