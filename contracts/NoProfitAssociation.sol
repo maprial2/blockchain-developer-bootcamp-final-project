@@ -23,7 +23,6 @@ uint256 campaignId;
 mapping (uint256 => Campaign)  public campaigns;
 
 modifier isNotCampaignCreator(uint _idCampaign) {
-
     require(campaigns[_idCampaign].campaignCreator != msg.sender,"Campaign creator cannot");
     _;
 }
@@ -77,11 +76,9 @@ function removeCampaign(uint256 _idCampaign)  public onlyOwner {
 ///@notice Method to support a Campaign (give a like). Increasing the score.
 ///@param _idCampaign Campaign identifier
 function likeCampaign(uint _idCampaign) isNotCampaignCreator(_idCampaign) public{
-    
+   
      int16 currentScore = campaigns[_idCampaign].score;
      campaigns[_idCampaign].score = ++currentScore;
-     
-
 }
 ///@notice Method to give a negative opinion to a Campaign.Decreasing the score 
 ///@param _idCampaign Campaign identifier
@@ -92,8 +89,15 @@ function dislikeCampaign(uint _idCampaign) public {
 
 ///@notice Give the information about a Campaign 
 ///@param _idCampaign Campaign identifier
+///@return _id  identifier
+///@return _campaignName Campaign title
+///@return _campaignDescription Campaign description
+///@return _totalAmountRequired funds required for Campaign
+///@return _score Campaign score according users
+///@return _campaignCreator address of Campaign creator
+///@return _currentEthers ethers donated to the Campaign by users
 function getCampaign (uint256 _idCampaign) public view returns(uint256 _id, string memory _campaignName, string memory _campaignDescription,
- uint256 totalAmountRequired,int16 score, address campaignCreator, uint256 _currentEthers) {
+ uint256 _totalAmountRequired,int16 _score, address _campaignCreator, uint256 _currentEthers) {
     return (
     campaigns[_idCampaign].idCampaign,
     campaigns[_idCampaign].campaignName,

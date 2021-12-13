@@ -2,7 +2,7 @@ const NoProfitAssociation = artifacts.require("NoProfitAssociation");
 
 contract("NoProfitAssociation", function (accounts) {
   var smartContInstance;
-  //const [owner, secondAccount, third] = accounts;
+  
   beforeEach(async () => {
     smartContInstance = await NoProfitAssociation.new();
   });
@@ -10,9 +10,9 @@ contract("NoProfitAssociation", function (accounts) {
     it("should set owner at firts account in contract deploy according OpenZeppelin Ownable", async () => {
       assert.strictEqual(await smartContInstance.owner(), accounts[0]);
     });
-    //check that at beginning when create a Campaign it is added to the list of Campaigns and identifier is 0
+    //check that at beginning when create the first Campaign it is added to the list of Campaigns and identifier is 0
     it("Initial identifier of Campaigns is zero", async () => {
-      //amother no contract owner would create the campaign
+      //another no contract owner would create the campaign
       const campaignCreator = accounts[1];
       var numberCampaigns;
       try {
@@ -56,7 +56,7 @@ contract("NoProfitAssociation", function (accounts) {
           assert.equal(numberCampaigns.length, 2);
           assert.equal(numberCampaigns[1], 1);
     });
-
+    //check campaign score is increased when user like the campaign
     it("should increase score from a cmpaign", async () => {
 
       const campaigAddressToIncrease = accounts[1];
@@ -66,7 +66,7 @@ contract("NoProfitAssociation", function (accounts) {
         } catch (err) {
           console.log(err);
         }
-      var balancex;
+ 
       try {
         await smartContInstance.likeCampaign(0);
       }  catch (err) {
@@ -75,20 +75,27 @@ contract("NoProfitAssociation", function (accounts) {
 
       try {
   
-        const nm = await smartContInstance.getCampaign(0);
+        const campaign = await smartContInstance.getCampaign(0);
         
-       const balancex = nm.value[6];
-       assert.equal(balancex,1,"off");
+       const score = campaign.value[6];
+       assert.equal(score,1,"off");
       }  catch (err) {
         console.log(err);
       }
       
     });
 
+    //check that contract assets is increased when user donates to a campaign
     it("should check donation is transfered", async function () {
-      const campaignCreator = accounts[1];
+     // const campaignCreator = accounts[1];
+     const campaign = accounts[1];
+     try {
+      await smartContInstance.createCampaign("campaign name", "campaign description",3,campaign);
+      } catch (err) {
+        console.log(err);
+      }
       try {
-        await smartContInstance.addMoneyToCampaign(0,web3.utils.toWei('0.2', 'ether'),campaignCreator);
+        await smartContInstance.addMoneyToCampaign(0,web3.utils.toWei('0.2', 'ether'));
       
       } catch (err) {
           console.log(err);
@@ -129,4 +136,5 @@ contract("NoProfitAssociation", function (accounts) {
           assert.equal(numberCampaigns.length, 1);
           assert.equal(numberCampaigns[0], 0);
     });
+    
   });

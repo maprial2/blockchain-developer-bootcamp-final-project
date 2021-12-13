@@ -1,288 +1,295 @@
 // contract address on Ropsten:
-const ssAddress = '0xb55B3F28d0d2Fe63b199B336fFA52f934c67DE64';
+const ssAddress = '0x79dD62f03771e3FeA715F819aa89e9863Fb9cAC0';
 
 const ssABI = [
-	{
-		"inputs": [],
-		"stateMutability": "nonpayable",
-		"type": "constructor"
-	},
-	{
-		"anonymous": false,
-		"inputs": [
-			{
-				"indexed": true,
-				"internalType": "address",
-				"name": "from",
-				"type": "address"
-			}
-		],
-		"name": "Liked",
-		"type": "event"
-	},
-	{
-		"anonymous": false,
-		"inputs": [
-			{
-				"indexed": true,
-				"internalType": "address",
-				"name": "previousOwner",
-				"type": "address"
-			},
-			{
-				"indexed": true,
-				"internalType": "address",
-				"name": "newOwner",
-				"type": "address"
-			}
-		],
-		"name": "OwnershipTransferred",
-		"type": "event"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "uint256",
-				"name": "_idCampaign",
-				"type": "uint256"
-			},
-			{
-				"internalType": "uint256",
-				"name": "_donation",
-				"type": "uint256"
-			}
-		],
-		"name": "addMoneyToCampaign",
-		"outputs": [],
-		"stateMutability": "payable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "uint256",
-				"name": "",
-				"type": "uint256"
-			}
-		],
-		"name": "campaigns",
-		"outputs": [
-			{
-				"internalType": "uint256",
-				"name": "idCampaign",
-				"type": "uint256"
-			},
-			{
-				"internalType": "string",
-				"name": "campaignName",
-				"type": "string"
-			},
-			{
-				"internalType": "string",
-				"name": "campaignDescription",
-				"type": "string"
-			},
-			{
-				"internalType": "uint256",
-				"name": "totalAmountRequired",
-				"type": "uint256"
-			},
-			{
-				"internalType": "int16",
-				"name": "score",
-				"type": "int16"
-			},
-			{
-				"internalType": "address payable",
-				"name": "campaignCreator",
-				"type": "address"
-			},
-			{
-				"internalType": "uint256",
-				"name": "currentEthers",
-				"type": "uint256"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "string",
-				"name": "_campaignName",
-				"type": "string"
-			},
-			{
-				"internalType": "string",
-				"name": "_campaignDescription",
-				"type": "string"
-			},
-			{
-				"internalType": "uint256",
-				"name": "_totalAmountRequired",
-				"type": "uint256"
-			},
-			{
-				"internalType": "address payable",
-				"name": "_campaignCreator",
-				"type": "address"
-			}
-		],
-		"name": "createCampaign",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "uint256",
-				"name": "_idCampaign",
-				"type": "uint256"
-			}
-		],
-		"name": "dislikeCampaign",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "uint256",
-				"name": "_idCampaign",
-				"type": "uint256"
-			}
-		],
-		"name": "getCampaign",
-		"outputs": [
-			{
-				"internalType": "uint256",
-				"name": "_id",
-				"type": "uint256"
-			},
-			{
-				"internalType": "string",
-				"name": "_campaignName",
-				"type": "string"
-			},
-			{
-				"internalType": "string",
-				"name": "_campaignDescription",
-				"type": "string"
-			},
-			{
-				"internalType": "uint256",
-				"name": "totalAmountRequired",
-				"type": "uint256"
-			},
-			{
-				"internalType": "int16",
-				"name": "score",
-				"type": "int16"
-			},
-			{
-				"internalType": "address",
-				"name": "campaignCreator",
-				"type": "address"
-			},
-			{
-				"internalType": "uint256",
-				"name": "_currentEthers",
-				"type": "uint256"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [],
-		"name": "getCampaignsList",
-		"outputs": [
-			{
-				"internalType": "uint256[]",
-				"name": "",
-				"type": "uint256[]"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "uint256",
-				"name": "_idCampaign",
-				"type": "uint256"
-			}
-		],
-		"name": "likeCampaign",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [],
-		"name": "owner",
-		"outputs": [
-			{
-				"internalType": "address",
-				"name": "",
-				"type": "address"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "uint256",
-				"name": "_idCampaign",
-				"type": "uint256"
-			}
-		],
-		"name": "removeCampaign",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [],
-		"name": "renounceOwnership",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "uint256",
-				"name": "_idCampaign",
-				"type": "uint256"
-			}
-		],
-		"name": "transferCampaignEthers",
-		"outputs": [],
-		"stateMutability": "payable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "address",
-				"name": "newOwner",
-				"type": "address"
-			}
-		],
-		"name": "transferOwnership",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	}
-]
-
+  {
+    "inputs": [],
+    "stateMutability": "nonpayable",
+    "type": "constructor"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "_idCampaign",
+        "type": "uint256"
+      }
+    ],
+    "name": "LogLiked",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "previousOwner",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "newOwner",
+        "type": "address"
+      }
+    ],
+    "name": "OwnershipTransferred",
+    "type": "event"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "name": "campaigns",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "idCampaign",
+        "type": "uint256"
+      },
+      {
+        "internalType": "string",
+        "name": "campaignName",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "campaignDescription",
+        "type": "string"
+      },
+      {
+        "internalType": "uint256",
+        "name": "totalAmountRequired",
+        "type": "uint256"
+      },
+      {
+        "internalType": "int16",
+        "name": "score",
+        "type": "int16"
+      },
+      {
+        "internalType": "address payable",
+        "name": "campaignCreator",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "currentEthers",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function",
+    "constant": true
+  },
+  {
+    "inputs": [],
+    "name": "owner",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function",
+    "constant": true
+  },
+  {
+    "inputs": [],
+    "name": "renounceOwnership",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "newOwner",
+        "type": "address"
+      }
+    ],
+    "name": "transferOwnership",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "string",
+        "name": "_campaignName",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "_campaignDescription",
+        "type": "string"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_totalAmountRequired",
+        "type": "uint256"
+      },
+      {
+        "internalType": "address payable",
+        "name": "_campaignCreator",
+        "type": "address"
+      }
+    ],
+    "name": "createCampaign",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "_idCampaign",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_donation",
+        "type": "uint256"
+      }
+    ],
+    "name": "addMoneyToCampaign",
+    "outputs": [],
+    "stateMutability": "payable",
+    "type": "function",
+    "payable": true
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "_idCampaign",
+        "type": "uint256"
+      }
+    ],
+    "name": "removeCampaign",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "_idCampaign",
+        "type": "uint256"
+      }
+    ],
+    "name": "likeCampaign",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "_idCampaign",
+        "type": "uint256"
+      }
+    ],
+    "name": "dislikeCampaign",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "_idCampaign",
+        "type": "uint256"
+      }
+    ],
+    "name": "getCampaign",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "_id",
+        "type": "uint256"
+      },
+      {
+        "internalType": "string",
+        "name": "_campaignName",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "_campaignDescription",
+        "type": "string"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_totalAmountRequired",
+        "type": "uint256"
+      },
+      {
+        "internalType": "int16",
+        "name": "_score",
+        "type": "int16"
+      },
+      {
+        "internalType": "address",
+        "name": "_campaignCreator",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_currentEthers",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function",
+    "constant": true
+  },
+  {
+    "inputs": [],
+    "name": "getCampaignsList",
+    "outputs": [
+      {
+        "internalType": "uint256[]",
+        "name": "",
+        "type": "uint256[]"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function",
+    "constant": true
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "_idCampaign",
+        "type": "uint256"
+      }
+    ],
+    "name": "transferCampaignEthers",
+    "outputs": [],
+    "stateMutability": "payable",
+    "type": "function",
+    "payable": true
+  }
+];
+     
+  
 
 
 window.addEventListener('load', function() {
@@ -292,9 +299,6 @@ window.addEventListener('load', function() {
       if (window.ethereum.isMetaMask === true) {
         let mmDetected = document.getElementById('mm-detected')
         mmDetected.innerHTML += 'MetaMask Is Available!'
-  
-        // add in web3 here
-        var web3 = new Web3(window.ethereum)
   
       } else {
         console.log('MetaMask is not available')
@@ -311,17 +315,9 @@ window.addEventListener('load', function() {
   
   var web3 = new Web3(window.ethereum);
   
-  // Grabbing the button object,  
+  // Button to connect to metamask  
   
   const mmEnable = document.getElementById('button-mm-connect');
-  
-  // since MetaMask has been detected, we know
-  // `ethereum` is an object, so we'll do the canonical
-  // MM request to connect the account. 
-  // 
-  // typically we only request access to MetaMask when we
-  // need the user to do something, but this is just for
-  // an example
    
   mmEnable.onclick = async () => {
     await ethereum.request({ method: 'eth_requestAccounts'})
@@ -334,17 +330,17 @@ window.addEventListener('load', function() {
   const divButtons = document.getElementById('idInitialOptions');
   const addCampaignButton = document.getElementById('idAddCampaignButton');
 
+  //user can add a Campaign to the add clicking this button
   addCampaignButton.onclick = async() => { 
 
 if( !document.getElementById('divWithForm')) {
 	if(document.getElementById('idCampaigns')){
 		hideCampaigns();
 	}
-	const divButtons = document.getElementById('idInitialOptions');
-
-	const divSq = document.createElement("div");
-	divSq.setAttribute('id','divWithForm');
-	const para = document.createElement("p");
+const divButtons = document.getElementById('idInitialOptions');
+const divSq = document.createElement("div");
+divSq.setAttribute('id','divWithForm');
+const para = document.createElement("p");
 const node = document.createTextNode("Fill Project name");
 para.appendChild(node);
 divSq.appendChild(para);
@@ -359,13 +355,13 @@ descrP.appendChild(descrPtext);
 divSq.appendChild(descrP);
 
 var textAreaDescr = document.createElement("textarea");
-textAreaDescr.setAttribute('maxlength', '30');
+textAreaDescr.setAttribute('maxlength', '300');
 textAreaDescr.setAttribute('id', 'ss-input-box-desc');
 textAreaDescr.setAttribute('rows', '4');
 textAreaDescr.setAttribute('cols', '100');
 textAreaDescr.setAttribute('placeholder', 'Project description');
 divSq.appendChild(textAreaDescr);
-var space = document.createElement("br");
+const space = document.createElement("br");
 divSq.appendChild(space);
 
 
@@ -374,7 +370,6 @@ const titleAmountDescr = document.createTextNode("Amount required (in ethers)");
 titleAmount.appendChild(titleAmountDescr);
 divSq.appendChild(titleAmount);
 var inputAmount = document.createElement("input");
-//.setAttribute('type', 'number');
 inputAmount.setAttribute('id', 'ss-input-box-amount');
 divSq.appendChild(inputAmount);
 var spaceAm = document.createElement("br");
@@ -386,28 +381,21 @@ buttonCreate.innerHTML="Create Campaign";
 buttonCreate.onclick = async() => {
 
 	
-		// grab value from input
+	// get name value from input
 		
-		const ssInputNameValue = document.getElementById('ss-input-box-name').value;
-		console.log(ssInputNameValue)
+	const ssInputNameValue = document.getElementById('ss-input-box-name').value;
+	// get description value from input
+	const ssInputDescValue = document.getElementById('ss-input-box-desc').value;
+	// get ethers requested value from input
+	var ssInputAmountValue = document.getElementById('ss-input-box-amount').value;
 	
-		const ssInputDescValue = document.getElementById('ss-input-box-desc').value;
-		console.log(ssInputDescValue)
-		var ssInputAmountValue = document.getElementById('ss-input-box-amount').value;
-		console.log(ssInputAmountValue) 
-		var web3 = new Web3(window.ethereum)
-	
-		const addresSelected = ethereum.selectedAddress;
-	
-		console.log('addres' + addresSelected);
-	  
-		// instantiate smart contract instance
-		
-		const noProfitAssoc = new web3.eth.Contract(ssABI, ssAddress)
-		noProfitAssoc.setProvider(window.ethereum)
-		const amountDonated = web3.utils.toWei(ssInputAmountValue,'ether');
-		
-		await noProfitAssoc.methods.createCampaign(ssInputNameValue, ssInputDescValue,amountDonated, addresSelected).send({from: ethereum.selectedAddress}).then(getCampaignsList);
+	var web3 = new Web3(window.ethereum)
+	const addresSelected = ethereum.selectedAddress;
+	const noProfitAssoc = new web3.eth.Contract(ssABI, ssAddress)
+	noProfitAssoc.setProvider(window.ethereum)
+	const amountDonated = web3.utils.toWei(ssInputAmountValue,'ether');
+	//call to contract method to add a Campaign	
+	await noProfitAssoc.methods.createCampaign(ssInputNameValue, ssInputDescValue,amountDonated, addresSelected).send({from: ethereum.selectedAddress}).then(getCampaignsList);
 }
 divSq.appendChild(buttonCreate);
 
@@ -449,7 +437,7 @@ divButtons.append(divSq);}
 	  parentHideDiv.removeChild(hideDiv);
 	  }
   }
-
+//function called to show an campaign information
   async function showCampaign(id) {
 	 
 	console.log('campaign is' + id+ ''); 
@@ -462,6 +450,7 @@ divButtons.append(divSq);}
 	
 	const divCampaign = document.createElement("div");
 	divCampaign.setAttribute('id',id);
+	divCampaign.className='campaignDivBorder';
 	const titleCampaign = document.createElement("p");
 	titleCampaign.innerText = "Campaign: "+Object.values(campaign)[1];
 	divCampaign.appendChild(titleCampaign);
@@ -482,17 +471,24 @@ divButtons.append(divSq);}
 	currentAmountText.innerText = "current ethers: "+ web3.utils.fromWei(Object.values(campaign)[6]);
 	divCampaign.appendChild(currentAmountText);
 
+	const divDonate = document.createElement('div');
 	const donateButton = document.createElement("button");
 	donateButton.innerHTML="Donate";
-	divCampaign.appendChild(donateButton);
-
+	divDonate.appendChild(donateButton);
+	
+	var spaceDiv = document.createElement("br");
+	
 	const donationAmount = document.createElement('input');
 	donationAmount.setAttribute('id','idDonationAmount'+id);
-	divCampaign.appendChild(donationAmount);
+	divDonate.appendChild(donationAmount);
 
 	donateButton.onclick =  () => {
 		addResources(id);
 	}
+
+	divCampaign.appendChild(divDonate);
+	divCampaign.appendChild(spaceDiv);
+
 	const likeButton = document.createElement("button");
 	likeButton.innerHTML="Like";
 	divCampaign.appendChild(likeButton);
@@ -508,14 +504,20 @@ divButtons.append(divSq);}
 	dislikeButton.onclick = () => {
 		dislikeCampaign(id);
 	}
+	
+	const divRemoveCampaign = document.createElement("div");
+	divCampaign.appendChild(divRemoveCampaign);
+	
 
 	const removeCampaignButton = document.createElement("button");
 	removeCampaignButton.innerHTML="Remove Campaign";
-	divCampaign.appendChild(removeCampaignButton);
-
 	removeCampaignButton.onclick = () => {
 		removeCampaign(id);
 	}
+	divRemoveCampaign.appendChild(removeCampaignButton);
+	divCampaign.appendChild(divRemoveCampaign);
+	divCampaign.appendChild(spaceDiv);
+	
 
   const transferCampaignEthButton = document.createElement("button");
 	transferCampaignEthButton.innerHTML="Transfer Ethers";
@@ -539,14 +541,16 @@ divButtons.append(divSq);}
 	
   await noProfitAssoc.methods.addMoneyToCampaign(idCamp,web3.utils.toWei(amountDonated,'ether')).send({from: ethereum.selectedAddress,value:web3.utils.toWei(amountDonated,'ether')}).then(getCampaignsList);
   }
-
+  //function called when user click in like button
   async function supportCampaign (idCamp) {
 	var web3 = new Web3(window.ethereum);
     const noProfitAssoc = new web3.eth.Contract(ssABI, ssAddress);
     noProfitAssoc.setProvider(window.ethereum);
-    await noProfitAssoc.methods.likeCampaign(idCamp).send({from: ethereum.selectedAddress}).then(getCampaignsList);
+	await noProfitAssoc.methods.likeCampaign(idCamp).send({from: ethereum.selectedAddress});
+	
 }
 
+//function called when user click in dislike button
 async function dislikeCampaign (idCamp) {
 	var web3 = new Web3(window.ethereum);
     const noProfitAssoc = new web3.eth.Contract(ssABI, ssAddress);
