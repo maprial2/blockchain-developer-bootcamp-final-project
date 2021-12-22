@@ -1,24 +1,12 @@
 // contract address on Ropsten:
-const ssAddress = '0x79dD62f03771e3FeA715F819aa89e9863Fb9cAC0';
+const ssAddress = '0xaE4842d2610ED0b1D7cb01D83FbE42314739f3cF';
+
 
 const ssABI = [
   {
     "inputs": [],
     "stateMutability": "nonpayable",
     "type": "constructor"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "_idCampaign",
-        "type": "uint256"
-      }
-    ],
-    "name": "LogLiked",
-    "type": "event"
   },
   {
     "anonymous": false,
@@ -86,8 +74,7 @@ const ssABI = [
       }
     ],
     "stateMutability": "view",
-    "type": "function",
-    "constant": true
+    "type": "function"
   },
   {
     "inputs": [],
@@ -100,8 +87,7 @@ const ssABI = [
       }
     ],
     "stateMutability": "view",
-    "type": "function",
-    "constant": true
+    "type": "function"
   },
   {
     "inputs": [],
@@ -167,8 +153,7 @@ const ssABI = [
     "name": "addMoneyToCampaign",
     "outputs": [],
     "stateMutability": "payable",
-    "type": "function",
-    "payable": true
+    "type": "function"
   },
   {
     "inputs": [
@@ -256,8 +241,7 @@ const ssABI = [
       }
     ],
     "stateMutability": "view",
-    "type": "function",
-    "constant": true
+    "type": "function"
   },
   {
     "inputs": [],
@@ -270,8 +254,7 @@ const ssABI = [
       }
     ],
     "stateMutability": "view",
-    "type": "function",
-    "constant": true
+    "type": "function"
   },
   {
     "inputs": [
@@ -284,27 +267,20 @@ const ssABI = [
     "name": "transferCampaignEthers",
     "outputs": [],
     "stateMutability": "payable",
-    "type": "function",
-    "payable": true
+    "type": "function"
   }
-];
-     
-  
+]
 
 
 window.addEventListener('load', function() {
   
     if (typeof window.ethereum !== 'undefined') {
       console.log('window.ethereum is enabled')
-      if (window.ethereum.isMetaMask === true) {
+      if (window.ethereum.isMetaMask !== true) {
         let mmDetected = document.getElementById('mm-detected')
-        mmDetected.innerHTML += 'MetaMask Is Available!'
+        mmDetected.innerHTML += 'MetaMask is not Available!'
   
-      } else {
-        console.log('MetaMask is not available')
-        let mmDetected = document.getElementById('mm-detected')
-        mmDetected.innerHTML += 'MetaMask Not Available!'
-      }
+      } 
     } else {
       console.log('window.ethereum is not found')
       let mmDetected = document.getElementById('mm-detected')
@@ -321,10 +297,7 @@ window.addEventListener('load', function() {
    
   mmEnable.onclick = async () => {
     await ethereum.request({ method: 'eth_requestAccounts'})
-    // grab mm-current-account
-    // and populate it with the current address
-    var mmCurrentAccount = document.getElementById('mm-current-account');
-    mmCurrentAccount.innerHTML = 'Current Account: ' + ethereum.selectedAddress
+   
   }
 
   const divButtons = document.getElementById('idInitialOptions');
@@ -340,6 +313,7 @@ if( !document.getElementById('divWithForm')) {
 const divButtons = document.getElementById('idInitialOptions');
 const divSq = document.createElement("div");
 divSq.setAttribute('id','divWithForm');
+divSq.className = "container border border-4 border-primary rounded mt-5 p-3";
 const para = document.createElement("p");
 const node = document.createTextNode("Fill Project name");
 para.appendChild(node);
@@ -358,12 +332,11 @@ var textAreaDescr = document.createElement("textarea");
 textAreaDescr.setAttribute('maxlength', '300');
 textAreaDescr.setAttribute('id', 'ss-input-box-desc');
 textAreaDescr.setAttribute('rows', '4');
-textAreaDescr.setAttribute('cols', '100');
-textAreaDescr.setAttribute('placeholder', 'Project description');
+textAreaDescr.setAttribute('placeholder', 'Project description Max 300 characters');
+textAreaDescr.className = "w-100";
 divSq.appendChild(textAreaDescr);
 const space = document.createElement("br");
 divSq.appendChild(space);
-
 
 const titleAmount = document.createElement("p");
 const titleAmountDescr = document.createTextNode("Amount required (in ethers)");
@@ -378,24 +351,35 @@ divSq.appendChild(spaceAm);
 
 const buttonCreate = document.createElement("button");
 buttonCreate.innerHTML="Create Campaign";
+buttonCreate.className = "btn btn-success mt-3";
 buttonCreate.onclick = async() => {
+  
+  let valuesValid = true;
+  // get ethers requested value from input
+  var ssInputAmountValue = document.getElementById('ss-input-box-amount').value;
+  // get name value from input
+  const ssInputNameValue = document.getElementById('ss-input-box-name').value;
+  if(ssInputNameValue === ""){ 
+    valuesValid = false;
+    alert("Please enter a Campaign name");
+  } 
+   // get description value from input
+   const ssInputDescValue = document.getElementById('ss-input-box-desc').value;
+   if(ssInputDescValue === ""){ 
+    valuesValid = false;
+    alert("Please enter a description");
+  }    
 
-	
-	// get name value from input
-		
-	const ssInputNameValue = document.getElementById('ss-input-box-name').value;
-	// get description value from input
-	const ssInputDescValue = document.getElementById('ss-input-box-desc').value;
-	// get ethers requested value from input
-	var ssInputAmountValue = document.getElementById('ss-input-box-amount').value;
-	
-	var web3 = new Web3(window.ethereum)
-	const addresSelected = ethereum.selectedAddress;
-	const noProfitAssoc = new web3.eth.Contract(ssABI, ssAddress)
-	noProfitAssoc.setProvider(window.ethereum)
-	const amountDonated = web3.utils.toWei(ssInputAmountValue,'ether');
-	//call to contract method to add a Campaign	
-	await noProfitAssoc.methods.createCampaign(ssInputNameValue, ssInputDescValue,amountDonated, addresSelected).send({from: ethereum.selectedAddress}).then(getCampaignsList);
+  if(valuesValid){
+    var web3 = new Web3(window.ethereum)
+    const addresSelected = ethereum.selectedAddress;
+    const noProfitAssoc = new web3.eth.Contract(ssABI, ssAddress)
+    noProfitAssoc.setProvider(window.ethereum)
+    const amountDonated = web3.utils.toWei(ssInputAmountValue,'ether');
+    //call to contract method to add a Campaign	
+    await noProfitAssoc.methods.createCampaign(ssInputNameValue, ssInputDescValue,amountDonated, addresSelected).send({from: ethereum.selectedAddress}).then(getCampaignsList);
+  } 
+
 }
 divSq.appendChild(buttonCreate);
 
@@ -439,8 +423,8 @@ divButtons.append(divSq);}
   }
 //function called to show an campaign information
   async function showCampaign(id) {
-	 
-	console.log('campaign is' + id+ ''); 
+
+
 	var web3 = new Web3(window.ethereum)
     const noProfitAssoc = new web3.eth.Contract(ssABI, ssAddress)
     noProfitAssoc.setProvider(window.ethereum)
@@ -450,7 +434,8 @@ divButtons.append(divSq);}
 	
 	const divCampaign = document.createElement("div");
 	divCampaign.setAttribute('id',id);
-	divCampaign.className='campaignDivBorder';
+  divCampaign.className = "container border border-3 border-primary mt-5 p-3";
+
 	const titleCampaign = document.createElement("p");
 	titleCampaign.innerText = "Campaign: "+Object.values(campaign)[1];
 	divCampaign.appendChild(titleCampaign);
@@ -473,6 +458,7 @@ divButtons.append(divSq);}
 
 	const divDonate = document.createElement('div');
 	const donateButton = document.createElement("button");
+  donateButton.className = "btn btn-primary btn-md";
 	donateButton.innerHTML="Donate";
 	divDonate.appendChild(donateButton);
 	
@@ -480,37 +466,42 @@ divButtons.append(divSq);}
 	
 	const donationAmount = document.createElement('input');
 	donationAmount.setAttribute('id','idDonationAmount'+id);
+  donationAmount.className = "m-3";
 	divDonate.appendChild(donationAmount);
 
 	donateButton.onclick =  () => {
 		addResources(id);
 	}
-
 	divCampaign.appendChild(divDonate);
 	divCampaign.appendChild(spaceDiv);
 
-	const likeButton = document.createElement("button");
-	likeButton.innerHTML="Like";
-	divCampaign.appendChild(likeButton);
+const likeButton = document.createElement("button");
+likeButton.className = "btn btn-success btn-md";
+likeButton.append("Like");
+
+divCampaign.appendChild(likeButton);
 
 	likeButton.onclick = () => {
+  
 		supportCampaign(id);
 	}
 
+
 	const dislikeButton = document.createElement("button");
 	dislikeButton.innerHTML="Dislike";
+  dislikeButton.className = "btn btn-warning btn-md m-3";
 	divCampaign.appendChild(dislikeButton);
 
 	dislikeButton.onclick = () => {
-		dislikeCampaign(id);
+      dislikeCampaign(id);     
 	}
-	
+
 	const divRemoveCampaign = document.createElement("div");
 	divCampaign.appendChild(divRemoveCampaign);
 	
-
 	const removeCampaignButton = document.createElement("button");
-	removeCampaignButton.innerHTML="Remove Campaign";
+	removeCampaignButton.innerHTML="Remove Campaign (only Administrator)";
+  removeCampaignButton.className = "btn btn-danger mt-3";
 	removeCampaignButton.onclick = () => {
 		removeCampaign(id);
 	}
@@ -522,24 +513,26 @@ divButtons.append(divSq);}
   const transferCampaignEthButton = document.createElement("button");
 	transferCampaignEthButton.innerHTML="Transfer Ethers";
   transferCampaignEthButton.setAttribute('id','idtransferCampaignEthButton'+id);
+  transferCampaignEthButton.className = "btn btn-primary mt-3";
 	divCampaign.appendChild(transferCampaignEthButton);
 
 	transferCampaignEthButton.onclick = () => {
 		transferEtherCampaignCreator(id);
 	}
-
 	divList.append(divCampaign);
 }
-  
-
   async function addResources (idCamp) {
 	var web3 = new Web3(window.ethereum);
     const noProfitAssoc = new web3.eth.Contract(ssABI, ssAddress);
     noProfitAssoc.setProvider(window.ethereum);
 	const amountDonated = document.getElementById('idDonationAmount'+idCamp).value;
-	console.log("amount donated "+amountDonated);
-	
-  await noProfitAssoc.methods.addMoneyToCampaign(idCamp,web3.utils.toWei(amountDonated,'ether')).send({from: ethereum.selectedAddress,value:web3.utils.toWei(amountDonated,'ether')}).then(getCampaignsList);
+  var regex = "^-?[0-9.]+";
+	if(!amountDonated.match(regex)){ 
+    valuesValid = false;
+    alert("Please enter a valid number");
+  } else {
+    await noProfitAssoc.methods.addMoneyToCampaign(idCamp,web3.utils.toWei(amountDonated,'ether')).send({from: ethereum.selectedAddress,value:web3.utils.toWei(amountDonated,'ether')}).then(getCampaignsList);
+    }
   }
   //function called when user click in like button
   async function supportCampaign (idCamp) {
@@ -555,7 +548,9 @@ async function dislikeCampaign (idCamp) {
 	var web3 = new Web3(window.ethereum);
     const noProfitAssoc = new web3.eth.Contract(ssABI, ssAddress);
     noProfitAssoc.setProvider(window.ethereum);
+    
 	 noProfitAssoc.methods.dislikeCampaign(idCamp).send({from: ethereum.selectedAddress}).then(getCampaignsList);
+  
 }
 
 async function removeCampaign (idCamp) {

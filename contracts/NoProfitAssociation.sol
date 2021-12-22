@@ -23,7 +23,12 @@ uint256 campaignId;
 mapping (uint256 => Campaign)  public campaigns;
 
 modifier isNotCampaignCreator(uint _idCampaign) {
-    require(campaigns[_idCampaign].campaignCreator != msg.sender,"Campaign creator cannot");
+    require(campaigns[_idCampaign].campaignCreator != msg.sender,"Campaign creator cannot do this");
+    _;
+}
+
+modifier campaignsNumbersAllowedExceeded() {
+    require (idCampaignsArray.length <= 20, "Campaigns number exceeded");
     _;
 }
 
@@ -37,8 +42,8 @@ constructor()  {
 ///@param _totalAmountRequired  Amount (in ethers) that user asf for the Campaign
 ///@param _campaignCreator Ethereum address of user who created the Campaign(funds will be transfered to this address)
 function createCampaign (string memory _campaignName, string memory _campaignDescription, uint256 _totalAmountRequired,
-address payable _campaignCreator) public {
-    
+address payable _campaignCreator) campaignsNumbersAllowedExceeded () public {
+
     campaigns[campaignId].idCampaign= campaignId;
     campaigns[campaignId].campaignName = _campaignName;
     campaigns[campaignId].campaignDescription = _campaignDescription;

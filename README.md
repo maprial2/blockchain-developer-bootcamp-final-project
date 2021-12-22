@@ -1,16 +1,14 @@
 # blockchain-developer-bootcamp-final-project
 
-Initial idea.
+Final project.-
 
-The objective is create a Dapp in Etherereum to do non-profit social projects.
+The objective is to create an application to manage various non-profit projects.
+It would be intended to be the final step of a series of previous discussions for example in various forums or Discord servers. For example, a DAO involved in non-profit projects.
 
-There will be two types of participants.
+One of them will be those that propose projects that have a social impact, for example, in your neighborhood. They will be able to create projects for which they apply for funding, they will target an amount to be raised. They will introduce the funds they require as well as a brief description of the project (it is assumed that they have already been discussed previously and would also reduce the necessary gas because that information will be stored on the blockchain).
 
-One of them will be those that propose projects that have a social impact, for example, in your neighborhood.
-To create a project, they must deposit an amount in ETH through a wallet such as Metamask, and they will target an amount to be raised.
+On the other hand there are those who can support the projects presented by providing funds, if the limit is exceeded, they can make contributions yet, as well as giving their opinion regarding the projects with likes or dislikes. Obviously project creators cannot support their own projects.
 
-After a time limit the smart contract, if the required funds have not been obtained, the funds will be returned to the sponsors (the initially deposited ETH will be used for transactions). If the recommended amount has been reached then the initial funds will be returned.
+Initially there will be an administrator of this application who will be in charge of transferring the funds to the applicants of the projects. Also before possible abuses or various actions may cancel a project submitted. The administrator will be the one who deploys the contract.
 
-On the other hand, there are the sponsors who can lean towards a project, no matter if the limit is exceeded, they can make contributions. There will also be a minimum quantity.
-
-Another possibility that sponsors will have is to vote for a project (this will require a transaction) and they can override that vote at any time.
+As improvements in the future in the project the figure of the administrator would be eliminated or at least its functions  limited.
