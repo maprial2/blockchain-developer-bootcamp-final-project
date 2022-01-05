@@ -1,3 +1,3 @@
-Address contract deployed:
+Address contract deployed: 0x52d8B4B5571922d9F7FB4474F8Fb0A2Eb4648d70
 
 Network: Ropsten
